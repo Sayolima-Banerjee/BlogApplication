@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .wrapper {
+            display:grid;
+            grid-template-rows: 10% 10% 90%;
+            grid-row-gap: 2em;
+
+        }
+
+        .wrapper > div {
+            padding: 1em;
+            border:#333 1px solid;
+        }
+
+
+    </style>
+</head>
+<body>
+<h1 style="text-align:center">Edit Post</h1>
+<!--Time: <b th:text="${execInfo.now.time}"></b> -->
+<form action="#" th:action="@{/publishNewPost}" th:object="${posts}" method="post">
+    <div class="wrapper">
+        <input type="hidden" th:field="*{id}" name="id">
+        <input type="text" th:field="*{title}" name="title">
+        <div sec:authorize="hasAnyAuthority('ROLE_Admin')">
+            <input type="text" th:field="*{author}" name="author" placeholder="Author Name">
+        </div>
+        <input type="text" th:name="tagString" th:value="${tags}">
+        <!-- <input type="text" th:name="tagString" name="tags" placeholder="Tags"> -->
+        <input type="text" th:field="*{content}" name="content">
+        <center>
+            <button type="submit">Update Post</button>
+        </center>
+    </div>
+</form>
+</body>
+</html>

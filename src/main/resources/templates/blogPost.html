@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blog Post</title>
+</head>
+<body>
+<h4>My Blog Application</h4>
+
+<!-- <b><span sec:authentication="email">Username</span></b>
+&nbsp;
+<span sec:authentication="principal.authorities">Roles</span>
+</div> -->
+
+<!-- <form th:action="@{/blog}" th:object ="${posts}" method="post"> -->
+<!--<a href="/posts">Home</a> -->
+
+<br>
+<div sec:authorize="isAuthenticated()">
+<a th:href="@{/showFormForUpdate/{id}(id=${posts.id})}"><button class="btn btn-info">Update</button></a>
+<a th:href="@{/deletePost/{id}(id=${posts.id})}"><button class="btn btn-info" style="float: right;">Delete</button></a>
+</div>
+
+<div th:object="${posts}">
+    <h1 style="text-align: center" th:text="${posts.title}"></h1>
+    <div style="text-align: center" th:text="${posts.author} + ', ' + ${posts.publishedAt}"></div>
+    <br>
+    <br>
+    <br>
+    <div th:text="${posts.content}"></div>
+    <br>
+    <br>
+    <h4>Tags</h4>
+    <div th:each="tag : ${posts.getTags()}">
+        <div th:text="${tag.name}"></div>
+    </div>
+    <br>
+    <br>
+
+    <h4>Write your Comment here</h4>
+    <form th:action="@{/postComments/{id}(id=${posts.id})}" th:object="${comments}" method="post">
+        <div class="wrapper">
+            <input type="text" th:field="*{name}" name="name" placeholder="Name">
+            <input type="text" th:field="*{email}" name="email" placeholder="Email">
+            <input type="text" th:field="*{comment}" name="comment" placeholder="Comment">
+            <button type="submit">Post</button>
+        </div>
+    </form>
+
+    <br>
+    <br>
+
+    <h4>Comments</h4>
+    <div th:each="comments : ${commentsList}">
+        <strong><div th:text="${comments.name}"></div></strong>
+        <div th:text="${comments.email}"></div>
+        <div th:text="${comments.comment}"></div>
+        <br>
+        <div sec:authorize="isAuthenticated()">
+        <a th:href="@{'/deleteComment/' + ${posts.id} + '/' + ${comments.id}}"><button class="btn btn-info">Delete</button></a>
+        <a th:href="@{'/updateComment/' + ${posts.id} + '/' + ${comments.id}}"><button class="btn btn-info">Update</button></a>
+        </div>
+        <br>
+        <br>
+    </div>
+</div>
+</form>
+</body>
+</html>

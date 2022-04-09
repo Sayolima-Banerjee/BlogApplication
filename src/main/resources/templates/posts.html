@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Posts</title>
+    <style>
+        .wrapper {
+            display: inline-block;
+<!--            grid-template-columns: 50%;-->
+<!--            grid-gap: 2em;-->
+            border: 1px solid;
+
+        }
+
+        .nested {
+            display: grid;
+            grid-gap: 1em;
+        }
+
+        .wrapper > div {
+            padding: 1em;
+            border: #333 1px solid;
+        }
+
+
+    </style>
+</head>
+<body>
+<h1>My Blog Application</h1>
+<div sec:authorize="!(isAuthenticated())"><a th:href="@{/login}" style="float:right;">Login</a></div>
+<div sec:authorize="isAuthenticated()"><a th:href="@{/logout}" style="float:right;">Logout</a></div>
+<br>
+<form th:action="@{/filter}" method="get" style="float:right;">
+    <p>
+        Filter
+        <select th:name="filter">
+            <option th:value="tags" th:text="tags"></option>
+            <option th:value="author" th:text="author"></option>
+            <option th:value="publishedAt" th:text="publishedAt"></option>
+        </select>
+        <input type="submit" value="Filter"/>
+    </p>
+</form>
+<br>
+<br>
+<form th:action="@{/filterByTags}" method="get" th:each="property : ${filter}"
+      th:if="${property} == tags" style="float: right;">
+    <input type="text" th:name="tags">
+    <input type="submit" value="filter">
+</form>
+<br>
+<form th:action="@{/filterByAuthor}" method="get" th:each="property : ${filter}"
+      th:if="${property} == author" style="float: right;">
+    <select th:name="authors" multiple>
+        <option th:each="author : ${listOfAuthors}" th:value="${author}"
+                th:text="${author}"></option>
+    </select>
+    <input type="submit" value="filter">
+</form>
+<br>
+<form th:action="@{filterByPublishedDate}" method="get" th:each="property : ${filter}"
+      th:if="${property} == publishedAt" style="float: right">
+    <select th:name="interval">
+        <option th:value="yesterday">Yesterday</option>
+        <option th:value="lastWeek">Last Week</option>
+        <option th:value="lastMonth">Last Month</option>
+        <option th:value="lastYear">Last Year</option>
+    </select>
+    <input type="submit" value="filter">
+</form>
+<form th:action="@{/search}" method="get">
+    <input type="search" name="keyword" th:value="${keyword}" placeholder="Search" size="25" align="right">
+    <button type="submit" class="btn btn-info">Search</button>
+    <button type="submit" class="btn btn-info">Reset</button>
+</form>
+<br>
+<br>
+<a th:href="@{'/page/' + ${currentPage} + '?sortDir=' + ${reverseSortDir}}"><button class="btn btn-info">Sort</button></a>
+<!--<div class="wrapper"> -->
+<!--<a th:href="@{/NewPost}">Create New Post</a> -->
+<div sec:authorize="!(isAuthenticated())">
+    <div class="wrapper">
+        <br>
+        <div th:each="posts : ${listOfPosts}"
+             style="display: inline-block; width: 45%; border: 1px solid; margin-left: 20px; margin-bottom: 20px;">
+            <a th:href="@{/blog/{id}(id=${posts.id})}" style="color:black; text-decoration:none;">
+                <div class="nested">
+                    <h2 th:text="${posts.title}"></h2>
+                    <div th:text="${posts.author} + ', ' + ${posts.publishedAt}"></div>
+                    <br>
+                    <div th:text="${posts.content}"></div>
+<!--                    <a th:href="@{/showFormForUpdate/{id}(id=${posts.id})}"><button class="btn btn-info">Update</button></a>-->
+<!--                    <a th:href="@{/deletePost/{id}(id=${posts.id})}"><button class="btn btn-info">Delete</button></a>-->
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div sec:authorize="hasAnyAuthority('ROLE_Author', 'ROLE_Admin')">
+    <div class="wrapper">
+        <br>
+        <a th:href="@{/NewPost}"><button class="btn btn-info">Create New Post</button></a>
+        <br><br>
+        <div th:each="posts : ${listOfPosts}"
+             style="display: inline-block; width: 45%; border: 1px solid; margin-left: 20px; margin-bottom: 20px;">
+            <a th:href="@{/blog/{id}(id=${posts.id})}" style="color:black; text-decoration:none;">
+                <div class="nested">
+                    <h2 th:text="${posts.title}"></h2>
+                    <div th:text="${posts.author} + ', ' + ${posts.publishedAt}"></div>
+                    <div th:text="${posts.content}"></div>
+<!--                    <a th:href="@{/showFormForUpdate/{id}(id=${posts.id})}">Update</a>-->
+<!--                    <a th:href="@{/deletePost/{id}(id=${posts.id})}">Delete</a>-->
+                </div>
+            </a>
+        </div>
+    </div>
+ </div>
+
+<div th:if="${totalPages > 1}">
+    Total Posts : [[${totalItems}]]
+    <div>
+        <span th:each="i: ${#numbers.sequence(1, totalPages)}">
+            <a th:if="${currentPage != i}" th:href="@{'/page/' + ${i} + '?sortDir=' + ${SortDir}}">[[${i}]]</a>
+            <span th:unless="${currentPage != i}">[[${i}]]</span> &nbsp; &nbsp;
+        </span>
+    </div>
+    <div>
+        <a th:if="${currentPage < totalPages}"
+           th:href="@{'/page/'+${currentPage + 1} + '?sortDir=' + ${SortDir}}">Next</a>
+        <span th:unless="${currentPage < totalPages}">Next</span>
+    </div>
+</div>
+</div>
+
+</body>
+</html>

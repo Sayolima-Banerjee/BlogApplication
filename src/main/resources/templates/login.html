@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+<center>
+<h1>Login</h1>
+<form th:action="@{/login}" method="post">
+
+    <!--  <div sec:authorize="isAuthenticated()">
+        <b><span sec:authentication="email">Username</span></b>
+        &nbsp;
+        <span sec:authentication="principal.authorities">Roles</span>
+      </div> -->
+
+    <!--<div th:if="${param.error}">
+      <div class="alert alert-danger">Invalid username or password</div>
+    </div>
+    <div th:if="${param.logout}">
+      <div class="alert alert-info">You have been logged out</div> -->
+    Username
+    <input type="text" id="username" name="username" placeholder="Enter Email Id" autofocus="autofocus"/>
+    <br>
+    <br>
+    Password
+    <input type="password" id="password" name="password" placeholder="Enter Password"/>
+    <br>
+    <br>
+    <button type="submit">Login</button>
+    </div>
+    <br>
+    <br>
+    <span>New User? <a href="/" th:href="@{/registration}">Register here</a></span>
+</form>
+
+<!-- <span sec:authentication="email">Username</span>
+ <span sec:authentication="principal.authorities">Roles</span> -->
+<!-- <div sec:authorize="isAuthenticated()">
+   <b><span sec:authentication="email">Username</span></b>
+   &nbsp;
+   <span sec:authentication="principal.authorities">Roles</span>
+ </div> -->
+</center>
+
+</body>
+</html>
